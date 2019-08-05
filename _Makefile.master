@@ -327,6 +327,8 @@ ifndef MCU
     endif
 endif
 
+$(info "MCU = $(F_CPU)")
+
 # We still have not found this board.
 ifndef MCU
     $(error Unknown board '$(BOARD)')
@@ -660,9 +662,6 @@ all: $(BUILD_DIR) $(IMAGE).hex
 
 clean:
 	$(RM) $(BUILD_DIR)
-	$(RM) *~ *.bak *.BAK *.Bak *.orig
-	$(RM) */*~ */*.bak */*.BAK */*.Bak */*.orig
-	$(RM) */*/*~ */*/*.bak */*/*.BAK */*/*.Bak */*/*.orig
 	sync
 
 $(BUILD_DIR):
@@ -756,7 +755,8 @@ $(IMAGE).hex: $(SKT_PDE_OBJ) $(SKT_LINK_OBJS) build/libAcore.a build/libAuser.a 
 	    --no-change-warnings --change-section-lma .eeprom=0 $(IMAGE).elf \
 	    $(IMAGE).eep
 	$(OBJCOPY) -O ihex -R .eeprom $(IMAGE).elf $(IMAGE).hex
-	$(OBJDUMP) -h -S $(IMAGE).elf | $(CXXFILT) -t > $(IMAGE).lst
+	#this used to be but crashed: $(OBJDUMP) -h -S $(IMAGE).elf | $(CXXFILT) -t > $(IMAGE).lst
+	$(OBJDUMP) -h -S $(IMAGE).elf | $(CXXFILT) > $(IMAGE).lst
 	$(show_burn_info)
 
 
